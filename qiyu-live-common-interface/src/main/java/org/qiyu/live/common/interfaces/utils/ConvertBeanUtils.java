@@ -1,4 +1,4 @@
-package org.qiyu.live.common.interfaces;
+package org.qiyu.live.common.interfaces.utils;
 
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;

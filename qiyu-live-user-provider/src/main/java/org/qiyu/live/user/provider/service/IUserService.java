@@ -1,6 +1,5 @@
 package org.qiyu.live.user.provider.service;
 
-import org.apache.catalina.User;
 import org.qiyu.live.user.dto.UserDTO;
 
 public interface IUserService {

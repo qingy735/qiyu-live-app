@@ -1,6 +1,5 @@
 package dubbo.privider;
 
-import dubbo.consumer.DubboConsumer;
 import org.apache.dubbo.config.*;
 import org.qiyu.live.user.interfaces.IUserRpc;
 import org.qiyu.live.user.provider.rpc.UserRpcImpl;

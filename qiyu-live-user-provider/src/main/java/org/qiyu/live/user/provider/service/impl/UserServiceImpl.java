@@ -1,11 +1,11 @@
 package org.qiyu.live.user.provider.service.impl;
 
 import jakarta.annotation.Resource;
-import org.qiyu.live.common.interfaces.ConvertBeanUtils;
+import org.qiyu.live.user.provider.service.IUserService;
+import org.qiyu.live.common.interfaces.utils.ConvertBeanUtils;
 import org.qiyu.live.user.dto.UserDTO;
 import org.qiyu.live.user.provider.dao.mapper.IUserMapper;
 import org.qiyu.live.user.provider.dao.po.UserPO;
-import org.qiyu.live.user.provider.service.IUserService;
 import org.springframework.stereotype.Service;
 
 /**
