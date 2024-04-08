@@ -3,15 +3,27 @@
   <component name="CompilerConfiguration">
     <excludeFromCompile>
       <directory url="file://$PROJECT_DIR$/src/main/resources/archetype-resources" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/qiyu-live-api/src/main/resources/archetype-resources" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/qiyu-live-common-interface/src/main/resources/archetype-resources" includeSubdirectories="true" />
     </excludeFromCompile>
     <annotationProcessing>
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="qiyu-live-user-provider" />
         <module name="qiyu-live-user-interface" />
+        <module name="qiyu-live-api" />
+        <module name="qiyu-live-user-provider" />
+        <module name="qiyu-live-common-interface" />
       </profile>
     </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="qiyu-live-api" options="-parameters" />
+      <module name="qiyu-live-common-interface" options="-parameters" />
+      <module name="qiyu-live-user-interface" options="-parameters" />
+      <module name="qiyu-live-user-provider" options="-parameters" />
+    </option>
   </component>
 </project>
