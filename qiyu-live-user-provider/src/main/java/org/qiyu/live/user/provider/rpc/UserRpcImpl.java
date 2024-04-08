@@ -6,6 +6,9 @@ import org.qiyu.live.user.dto.UserDTO;
 import org.qiyu.live.user.interfaces.IUserRpc;
 import org.qiyu.live.user.provider.service.IUserService;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @Author: QingY
  * @Date: Created in 21:40 2024-04-03
@@ -36,5 +39,10 @@ public class UserRpcImpl implements IUserRpc {
     @Override
     public boolean insertOne(UserDTO userDTO) {
         return userService.insertOne(userDTO);
+    }
+
+    @Override
+    public Map<Long, UserDTO> batchQueryUserInfo(List<Long> userIdList) {
+        return userService.batchQueryUserInfo(userIdList);
     }
 }
