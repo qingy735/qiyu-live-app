@@ -1,6 +1,6 @@
 spring:
-  application:
-    name: qiyu-live-api
+#  application:
+#    name: qiyu-live-api
   cloud:
     nacos:
       username: qiyu

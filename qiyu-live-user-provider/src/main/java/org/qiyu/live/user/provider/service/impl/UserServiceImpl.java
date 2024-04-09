@@ -1,7 +1,10 @@
 package org.qiyu.live.user.provider.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import jakarta.annotation.Resource;
+import org.apache.rocketmq.client.producer.MQProducer;
+import org.apache.rocketmq.common.message.Message;
 import org.qiyu.live.framework.redis.starter.key.RedisKeyBuilder;
 import org.qiyu.live.framework.redis.starter.key.UserProviderCacheKeyBuilder;
 import org.qiyu.live.user.provider.service.IUserService;
@@ -9,7 +12,10 @@ import org.qiyu.live.common.interfaces.utils.ConvertBeanUtils;
 import org.qiyu.live.user.dto.UserDTO;
 import org.qiyu.live.user.provider.dao.mapper.IUserMapper;
 import org.qiyu.live.user.provider.dao.po.UserPO;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -17,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +41,8 @@ public class UserServiceImpl implements IUserService {
     private RedisTemplate<String, UserDTO> redisTemplate;
     @Resource
     private UserProviderCacheKeyBuilder userProviderCacheKeyBuilder;
+    @Resource
+    private MQProducer mqProducer;
 
     @Override
     public UserDTO getById(Long userId) {
@@ -46,7 +56,7 @@ public class UserServiceImpl implements IUserService {
         }
         userDTO = ConvertBeanUtils.convert(userMapper.selectById(userId), UserDTO.class);
         if (userDTO != null) {
-            redisTemplate.opsForValue().set(key, userDTO);
+            redisTemplate.opsForValue().set(key, userDTO, 30, TimeUnit.MINUTES);
         }
         return userDTO;
     }
@@ -58,6 +68,14 @@ public class UserServiceImpl implements IUserService {
         }
         try {
             userMapper.updateById(ConvertBeanUtils.convert(userDTO, UserPO.class));
+            // 立即删除
+            redisTemplate.delete(userProviderCacheKeyBuilder.buildUserInfoKey(userDTO.getUserId()));
+            Message message = new Message();
+            // 延迟级别 1：一秒左右
+            message.setDelayTimeLevel(1);
+            message.setBody(JSON.toJSONString(userDTO).getBytes());
+            message.setTopic("user-update-cache");
+            mqProducer.send(message);
             return true;
         } catch (Exception e) {
             return false;
@@ -114,10 +132,25 @@ public class UserServiceImpl implements IUserService {
             // 更新redis
             Map<String, UserDTO> saveCacheMap = dbQueryResult.stream().collect(Collectors.toMap(userDTO -> userProviderCacheKeyBuilder.buildUserInfoKey(userDTO.getUserId()), x -> x));
             redisTemplate.opsForValue().multiSet(saveCacheMap);
+            // 管道批量传输命令 减少网络IO开销
+            redisTemplate.executePipelined(new SessionCallback<Object>() {
+                @Override
+                public <K, V> Object execute(RedisOperations<K, V> operations) throws DataAccessException {
+                    for (String redisKey : saveCacheMap.keySet()) {
+                        operations.expire((K) redisKey, createRandomExpireTime(), TimeUnit.SECONDS);
+                    }
+                    return null;
+                }
+            });
             // 添加进结果集
             userDTOList.addAll(dbQueryResult);
         }
         return userDTOList.stream().collect(Collectors.toMap(UserDTO::getUserId, x -> x));
+    }
+
+    private int createRandomExpireTime() {
+        int time = ThreadLocalRandom.current().nextInt(1000);
+        return time + 60 * 30;
     }
 }
 
