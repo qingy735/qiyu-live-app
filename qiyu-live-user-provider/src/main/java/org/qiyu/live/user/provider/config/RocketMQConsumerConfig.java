@@ -10,7 +10,9 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.qiyu.live.framework.redis.starter.key.UserProviderCacheKeyBuilder;
-import org.qiyu.live.user.dto.UserDTO;
+import org.qiyu.live.user.constants.CacheAsyncDeleteCode;
+import org.qiyu.live.user.constants.UserProviderTopicNames;
+import org.qiyu.live.user.dto.UserCacheAsyncDeleteDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -36,7 +38,7 @@ public class RocketMQConsumerConfig implements InitializingBean {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     @Resource
-    private UserProviderCacheKeyBuilder providerCacheKeyBuilder;
+    private UserProviderCacheKeyBuilder cacheKeyBuilder;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -51,19 +53,27 @@ public class RocketMQConsumerConfig implements InitializingBean {
             defaultMQPushConsumer.setConsumerGroup(consumerProperties.getGroupName());
             defaultMQPushConsumer.setConsumeMessageBatchMaxSize(1);
             defaultMQPushConsumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-            defaultMQPushConsumer.subscribe("user-update-cache", "*");
+            defaultMQPushConsumer.subscribe(UserProviderTopicNames.CACHE_ASYNC_DELETE_TOPIC, "*");
             defaultMQPushConsumer.setMessageListener(new MessageListenerConcurrently() {
                 @Override
                 public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> list, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
                     String msgStr = new String(list.get(0).getBody());
-                    UserDTO userDTO = JSON.parseObject(msgStr, UserDTO.class);
-                    if (userDTO == null || userDTO.getUserId() == null) {
-                        LOGGER.error("用户id为空，参数异常，内容: {}", msgStr);
+                    UserCacheAsyncDeleteDTO cacheAsyncDeleteDTO = JSON.parseObject(msgStr, UserCacheAsyncDeleteDTO.class);
+                    if (cacheAsyncDeleteDTO == null) {
+                        LOGGER.error("UserCacheAsyncDeleteDTO对象为空，参数异常，内容: {}", msgStr);
                         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
                     }
+                    Long userId = JSON.parseObject(cacheAsyncDeleteDTO.getJson()).getLong("userId");
                     // 延迟消息回调 处理相关缓存的二次删除
-                    redisTemplate.delete(providerCacheKeyBuilder.buildUserInfoKey(userDTO.getUserId()));
-                    LOGGER.info("延迟删除处理，userDTO is {}", userDTO);
+                    if (CacheAsyncDeleteCode.USER_INFO_DELETE.getCode() == cacheAsyncDeleteDTO.getCode()) {
+                        redisTemplate.delete(cacheKeyBuilder.buildUserInfoKey(userId));
+                        LOGGER.info("二次删除成功，业务Code为：{}，userId为: {}", cacheAsyncDeleteDTO.getCode(), userId);
+                        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                    } else if (CacheAsyncDeleteCode.USER_TAG_DELETE.getCode() == cacheAsyncDeleteDTO.getCode()) {
+                        redisTemplate.delete(cacheKeyBuilder.buildTagKey(userId));
+                        LOGGER.info("二次删除成功，业务Code为：{}，userId为: {}", cacheAsyncDeleteDTO.getCode(), userId);
+                        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                    }
                     return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
                 }
             });

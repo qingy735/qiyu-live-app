@@ -7,6 +7,9 @@ import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.common.message.Message;
 import org.qiyu.live.framework.redis.starter.key.RedisKeyBuilder;
 import org.qiyu.live.framework.redis.starter.key.UserProviderCacheKeyBuilder;
+import org.qiyu.live.user.constants.CacheAsyncDeleteCode;
+import org.qiyu.live.user.constants.UserProviderTopicNames;
+import org.qiyu.live.user.dto.UserCacheAsyncDeleteDTO;
 import org.qiyu.live.user.provider.service.IUserService;
 import org.qiyu.live.common.interfaces.utils.ConvertBeanUtils;
 import org.qiyu.live.user.dto.UserDTO;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -70,11 +74,22 @@ public class UserServiceImpl implements IUserService {
             userMapper.updateById(ConvertBeanUtils.convert(userDTO, UserPO.class));
             // 立即删除
             redisTemplate.delete(userProviderCacheKeyBuilder.buildUserInfoKey(userDTO.getUserId()));
+
+            // 初始化缓存删除对象
+            UserCacheAsyncDeleteDTO cacheAsyncDeleteDTO = new UserCacheAsyncDeleteDTO();
+            // 设置延迟消息code 指明业务
+            cacheAsyncDeleteDTO.setCode(CacheAsyncDeleteCode.USER_INFO_DELETE.getCode());
+            // 设计json信息
+            // 设计json信息
+            Map<String, Object> jsonParam = new HashMap<>();
+            jsonParam.put("userId", userDTO.getUserId());
+            cacheAsyncDeleteDTO.setJson(JSON.toJSONString(jsonParam));
+
             Message message = new Message();
             // 延迟级别 1：一秒左右
             message.setDelayTimeLevel(1);
-            message.setBody(JSON.toJSONString(userDTO).getBytes());
-            message.setTopic("user-update-cache");
+            message.setBody(JSON.toJSONString(cacheAsyncDeleteDTO).getBytes());
+            message.setTopic(UserProviderTopicNames.CACHE_ASYNC_DELETE_TOPIC);
             mqProducer.send(message);
             return true;
         } catch (Exception e) {
