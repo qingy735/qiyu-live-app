@@ -1,0 +1,1 @@
+docker run -d -v D:/JavaCode/qiyu-live-app/qiyu-live-user-provider/logs/qiyu-live-user-provider:/tmp/logs/qiyu-live-user-provider -p 9090:9090 --name qiyu-live-user-provider --add-host qiyu.nacos.com:127.0.0.1 -e TZ=Asia/Shanghai localhost/qiyu-live-test/qiyu-live-user-provider-docker:1.0.4

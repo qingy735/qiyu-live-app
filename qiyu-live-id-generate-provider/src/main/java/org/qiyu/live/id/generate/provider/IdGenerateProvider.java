@@ -2,6 +2,7 @@ package org.qiyu.live.id.generate.provider;
 
 import jakarta.annotation.Resource;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.qiyu.live.id.generate.provider.service.IdGenerateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableDubbo
 public class IdGenerateProvider implements CommandLineRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IdGenerateProvider.class);

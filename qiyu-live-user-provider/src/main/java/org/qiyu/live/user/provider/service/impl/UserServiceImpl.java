@@ -5,7 +5,6 @@ import com.google.common.collect.Maps;
 import jakarta.annotation.Resource;
 import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.common.message.Message;
-import org.qiyu.live.framework.redis.starter.key.RedisKeyBuilder;
 import org.qiyu.live.framework.redis.starter.key.UserProviderCacheKeyBuilder;
 import org.qiyu.live.user.constants.CacheAsyncDeleteCode;
 import org.qiyu.live.user.constants.UserProviderTopicNames;

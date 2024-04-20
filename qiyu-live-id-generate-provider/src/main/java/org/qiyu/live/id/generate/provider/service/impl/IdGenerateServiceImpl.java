@@ -1,6 +1,7 @@
 package org.qiyu.live.id.generate.provider.service.impl;
 
 import jakarta.annotation.Resource;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.qiyu.live.id.generate.provider.dao.mapper.IdGenerateMapper;
 import org.qiyu.live.id.generate.provider.dao.po.IdGeneratePO;
 import org.qiyu.live.id.generate.provider.service.IdGenerateService;

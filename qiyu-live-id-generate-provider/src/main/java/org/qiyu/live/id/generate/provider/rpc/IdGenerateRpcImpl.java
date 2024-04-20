@@ -1,7 +1,9 @@
 package org.qiyu.live.id.generate.provider.rpc;
 
+import jakarta.annotation.Resource;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.qiyu.live.id.generate.interfaces.IdGenerateRpc;
+import org.qiyu.live.id.generate.provider.service.IdGenerateService;
 
 /**
  * @Author: QingY
@@ -10,13 +12,17 @@ import org.qiyu.live.id.generate.interfaces.IdGenerateRpc;
  */
 @DubboService
 public class IdGenerateRpcImpl implements IdGenerateRpc {
+
+    @Resource
+    private IdGenerateService idGenerateService;
+
     @Override
     public Long getSeqId(Integer id) {
-        return null;
+        return idGenerateService.getSeqId(id);
     }
 
     @Override
     public Long getUnSeqId(Integer id) {
-        return null;
+        return idGenerateService.getUnSeqId(id);
     }
 }

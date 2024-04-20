@@ -16,6 +16,9 @@
         <module>qiyu-live-framework</module>
         <module>qiyu-live-id-generate-provider</module>
         <module>qiyu-live-id-generate-interface</module>
+        <module>qiyu-live-gateway</module>
+        <module>qiyu-live-msg-provider</module>
+        <module>qiyu-live-msg-interface</module>
     </modules>
 
     <properties>
@@ -24,6 +27,11 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springboot.version>3.0.4</springboot.version>
+        <dubbo.version>3.2.0-beta.3</dubbo.version>
+        <docker.registry.address>localhost</docker.registry.address>
+        <docker.registry.namespace>qiyu-live-test</docker.registry.namespace>
+        <arthus.zip.address>D:\Java\arthas-packaging-3.7.2-bin</arthus.zip.address>
+        <spring-cloud-boostrap.version>3.0.2</spring-cloud-boostrap.version>
     </properties>
 
     <parent>

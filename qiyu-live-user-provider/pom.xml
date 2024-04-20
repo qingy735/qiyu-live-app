@@ -8,6 +8,8 @@
     </parent>
     <artifactId>qiyu-live-user-provider</artifactId>
 
+    <version>1.0.4</version>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <curator.version>2.12.0</curator.version>
@@ -17,7 +19,6 @@
         <hessian.version>4.0.38</hessian.version>
         <rocketmq.client.version>4.8.0</rocketmq.client.version>
         <jetty.version>9.4.28.v20200408</jetty.version>
-        <dubbo.version>2.7.8</dubbo.version>
         <spring-cloud-alibaba.version>2022.0.0.0-RC1</spring-cloud-alibaba.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -28,11 +29,20 @@
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>3.2.0-beta.3</version>
+            <version>${dubbo.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+            <version>${spring-cloud-boostrap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -85,7 +95,6 @@
             <artifactId>qiyu-live-framework-redis-starter</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -96,16 +105,59 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.qingy</groupId>
+            <artifactId>qiyu-live-id-generate-interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}-docker</finalName>
         <plugins>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <executions>
+                    <!-- 当mvn执行install操作的时候，执行docker的build-->
+                    <execution>
+                        <id>build</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <imageTags>
+                        <imageTag>${project.version}</imageTag>
+                    </imageTags>
+                    <imageName>${docker.registry.address}/${docker.registry.namespace}/${project.build.finalName}</imageName>
+                    <!--指定Dockerfile文件的位置-->
+                    <dockerDirectory>${project.basedir}/docker</dockerDirectory>
+                    <dockerHost>http://127.0.0.1:2375</dockerHost>
+                    <!-- 指定jar包路径，这里对应Dockerfile中复制 jar 包到 docker容器指定目录配置，也可以写到Docokerfile中 -->
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <!-- 将下边目录的内容，拷贝到docker镜像中 -->
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${arthus.zip.address}</directory>
+                            <include>arthas-bin.zip</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+            <!-- 将SpringBoot应用打包成jar -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <classifier>exec</classifier>
-                </configuration>
             </plugin>
         </plugins>
     </build>
