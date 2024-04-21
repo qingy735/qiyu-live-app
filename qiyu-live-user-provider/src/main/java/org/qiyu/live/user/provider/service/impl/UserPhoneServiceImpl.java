@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.qiyu.live.common.interfaces.enums.CommonStatusEum;
+import org.qiyu.live.common.interfaces.enums.CommonStatusEnum;
 import org.qiyu.live.common.interfaces.utils.ConvertBeanUtils;
 import org.qiyu.live.common.interfaces.utils.DESUtils;
 import org.qiyu.live.framework.redis.starter.key.UserProviderCacheKeyBuilder;
@@ -19,11 +19,11 @@ import org.qiyu.live.user.provider.service.IUserPhoneService;
 import org.qiyu.live.user.provider.service.IUserService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -56,7 +56,7 @@ public class UserPhoneServiceImpl implements IUserPhoneService {
         UserPhoneDTO userPhoneDTO = queryByPhone(phone);
         // 如果注册过创建token 返回userId
         if (userPhoneDTO != null) {
-            return UserLoginDTO.loginSuccess(userPhoneDTO.getUserId(), createAndSaveLoginToken(userPhoneDTO.getUserId()));
+            return UserLoginDTO.loginSuccess(userPhoneDTO.getUserId());
         }
         // 没注册过 生成user信息 插入手机信息 绑定userId
         return registerAndLogin(phone);
@@ -68,7 +68,8 @@ public class UserPhoneServiceImpl implements IUserPhoneService {
      * @param phone
      * @return
      */
-    private UserLoginDTO registerAndLogin(String phone) {
+    @Transactional
+    public UserLoginDTO registerAndLogin(String phone) {
         Long userId = idGenerateRpc.getUnSeqId(IdTypeEnum.USER_ID.getCode());
         // Long userId = 10001L;
         UserDTO userDTO = new UserDTO();
@@ -78,21 +79,12 @@ public class UserPhoneServiceImpl implements IUserPhoneService {
         UserPhonePO userPhonePO = new UserPhonePO();
         userPhonePO.setUserId(userId);
         userPhonePO.setPhone(DESUtils.encrypt(phone));
-        userPhonePO.setStatus(CommonStatusEum.VALID_STATUS.getCode());
+        userPhonePO.setStatus(CommonStatusEnum.VALID_STATUS.getCode());
         userPhoneMapper.insert(userPhonePO);
         redisTemplate.delete(cacheKeyBuilder.buildUserPhoneObjKey(phone));
-        return UserLoginDTO.loginSuccess(userId, createAndSaveLoginToken(userId));
+        return UserLoginDTO.loginSuccess(userId);
     }
 
-    /**
-     * 创建并且记录token
-     */
-    private String createAndSaveLoginToken(Long userId) {
-        String token = UUID.randomUUID().toString();
-        // token -> xxx:xxx:token redis get userId
-        redisTemplate.opsForValue().set(cacheKeyBuilder.buildUserLoginTokenKey(token), userId, 30, TimeUnit.MINUTES);
-        return token;
-    }
 
     @Override
     public UserPhoneDTO queryByPhone(String phone) {
@@ -156,7 +148,7 @@ public class UserPhoneServiceImpl implements IUserPhoneService {
     public List<UserPhoneDTO> queryByUserIdFromDB(Long userId) {
         LambdaQueryWrapper<UserPhonePO> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserPhonePO::getUserId, userId);
-        queryWrapper.eq(UserPhonePO::getStatus, CommonStatusEum.VALID_STATUS.getCode());
+        queryWrapper.eq(UserPhonePO::getStatus, CommonStatusEnum.VALID_STATUS.getCode());
         queryWrapper.last("limit 1");
         return ConvertBeanUtils.convertList(userPhoneMapper.selectList(queryWrapper), UserPhoneDTO.class);
     }
@@ -170,7 +162,7 @@ public class UserPhoneServiceImpl implements IUserPhoneService {
     public UserPhoneDTO queryByPhoneFromDB(String phone) {
         LambdaQueryWrapper<UserPhonePO> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserPhonePO::getPhone, DESUtils.encrypt(phone));
-        queryWrapper.eq(UserPhonePO::getStatus, CommonStatusEum.VALID_STATUS.getCode());
+        queryWrapper.eq(UserPhonePO::getStatus, CommonStatusEnum.VALID_STATUS.getCode());
         queryWrapper.last("limit 1");
         return ConvertBeanUtils.convert(userPhoneMapper.selectOne(queryWrapper), UserPhoneDTO.class);
     }

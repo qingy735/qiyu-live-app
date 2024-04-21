@@ -5,11 +5,11 @@ package org.qiyu.live.common.interfaces.enums;
  * @Date: Created in 21:12 2024-04-19
  * @Description:
  */
-public enum CommonStatusEum {
+public enum CommonStatusEnum {
     INVALID_STATUS(0, "无效"),
     VALID_STATUS(1, "有效");
 
-    CommonStatusEum(int code, String desc) {
+    CommonStatusEnum(int code, String desc) {
         this.code = code;
         this.desc = desc;
     }

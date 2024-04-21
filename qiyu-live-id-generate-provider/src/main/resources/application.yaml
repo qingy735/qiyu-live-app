@@ -14,4 +14,4 @@ dubbo:
     address: nacos://127.0.0.1:8848?namespace=qiyu-live-test&&username=qiyu&&password=qiyu
   protocol:
     name: dubbo
-    port: 9098
+    port: 9092

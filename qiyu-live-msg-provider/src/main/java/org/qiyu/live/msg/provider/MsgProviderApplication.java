@@ -32,9 +32,9 @@ public class MsgProviderApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String phoneStr = "17887260231";
-        MsgSendResultEnum msgSendResultEnum = smsService.sendLoginCode(phoneStr);
-        MsgCheckDTO checkStatus = smsService.checkLoginCode(phoneStr, 480271);
-        System.out.println(checkStatus);
+        // String phoneStr = "17887260231";
+        // MsgSendResultEnum msgSendResultEnum = smsService.sendLoginCode(phoneStr);
+        // MsgCheckDTO checkStatus = smsService.checkLoginCode(phoneStr, 480271);
+        // System.out.println(checkStatus);
     }
 }

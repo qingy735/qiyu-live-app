@@ -45,7 +45,7 @@ public class SmsServiceImpl implements ISmsService {
             return MsgSendResultEnum.SEND_FAIL;
         }
         int code = RandomUtils.nextInt(100000, 999999);
-        redisTemplate.opsForValue().set(codeCacheKey, code, 60, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(codeCacheKey, code, 1, TimeUnit.DAYS);
         // 发送验证码
         ThreadPoolManager.commonAsyncPool.execute(() -> {
             boolean sendStatus = mockSendSms(phone, code);
@@ -70,10 +70,10 @@ public class SmsServiceImpl implements ISmsService {
             return new MsgCheckDTO(false, "验证码已过期");
         }
         if (cacheCode.equals(code)) {
-            redisTemplate.delete(codeCacheKey);
+            // redisTemplate.delete(codeCacheKey);
             return new MsgCheckDTO(true, "验证码校验成功");
         }
-        return new MsgCheckDTO(true, "验证码校验失败");
+        return new MsgCheckDTO(false, "验证码校验失败");
     }
 
     @Override

@@ -33,9 +33,9 @@ public class IdGenerateProvider implements CommandLineRunner {
     }
 
     public void run(String... args) throws Exception {
-        for (int i = 0; i < 1000; i++) {
-            Long id = idGenerateService.getSeqId(1);
-            System.out.println(id);
-        }
+        // for (int i = 0; i < 1000; i++) {
+        //     Long id = idGenerateService.getSeqId(1);
+        //     System.out.println(id);
+        // }
     }
 }
