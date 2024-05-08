@@ -6,51 +6,31 @@
         <artifactId>qiyu-live-app</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>qiyu-live-im-core-server</artifactId>
-    <description>基于netty构建的im服务</description>
+    <artifactId>qiyu-live-living-provider</artifactId>
 
     <properties>
-        <alibaba-fastjson.version>2.0.10</alibaba-fastjson.version>
-        <netty-all.version>4.1.18.Final</netty-all.version>
         <qiyu-live-redis-starter.version>1.0-SNAPSHOT</qiyu-live-redis-starter.version>
         <qiyu-live-im-interface.version>1.0-SNAPSHOT</qiyu-live-im-interface.version>
+        <qiyu-live-living-interface.version>1.0-SNAPSHOT</qiyu-live-living-interface.version>
         <qiyu-live-common-interface.version>1.0-SNAPSHOT</qiyu-live-common-interface.version>
+        <mybatis-plus.version>3.5.3</mybatis-plus.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>${netty-all.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${alibaba-fastjson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.qingy</groupId>
-            <artifactId>qiyu-live-im-interface</artifactId>
-            <version>${qiyu-live-im-interface.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.qingy</groupId>
             <artifactId>qiyu-live-common-interface</artifactId>
-            <version>${qiyu-live-common-interface.version}</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.qingy</groupId>
             <artifactId>qiyu-live-framework-redis-starter</artifactId>
-            <version>${qiyu-live-redis-starter.version}</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.qingy</groupId>
-            <artifactId>qiyu-live-framework-mq-starter</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <version>${dubbo.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -61,20 +41,24 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>${dubbo.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
             <version>${spring-cloud-boostrap.version}</version>
         </dependency>
         <dependency>
             <groupId>org.qingy</groupId>
-            <artifactId>qiyu-live-im-core-server-interface</artifactId>
+            <artifactId>qiyu-live-living-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${qiyu-mysql.version}</version>
         </dependency>
     </dependencies>
 </project>
