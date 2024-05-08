@@ -2,12 +2,9 @@ package org.qiyu.live.im.core.server.handler.impl;
 
 import io.netty.channel.ChannelHandlerContext;
 import jakarta.annotation.Resource;
-import org.apache.rocketmq.client.exception.MQBrokerException;
-import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
-import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.qiyu.live.common.interfaces.topic.ImCoreServerProviderTopicNames;
 import org.qiyu.live.im.core.server.common.ImContextUtils;
 import org.qiyu.live.im.core.server.common.ImMsg;

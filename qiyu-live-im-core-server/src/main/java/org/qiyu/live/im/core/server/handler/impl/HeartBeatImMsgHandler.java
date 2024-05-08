@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit;
  * @Description:
  */
 @Component
-public class HeartBeatImHandler implements SimplyHandler {
+public class HeartBeatImMsgHandler implements SimplyHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HeartBeatImHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HeartBeatImMsgHandler.class);
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
@@ -50,7 +50,7 @@ public class HeartBeatImHandler implements SimplyHandler {
             throw new IllegalArgumentException("attr is error");
         }
         // 心跳包record记录 redis存储
-        String redisKey = cacheKeyBuilder.buildImHeartBeatKey(appId, userId);
+        String redisKey = cacheKeyBuilder.buildImHeartBeatKey(userId, appId);
         // qiyu-live-im-core-server:heartbeat:999:zset
         this.recordOnlineTime(userId, redisKey);
         this.removeExpireRecord(userId, redisKey);

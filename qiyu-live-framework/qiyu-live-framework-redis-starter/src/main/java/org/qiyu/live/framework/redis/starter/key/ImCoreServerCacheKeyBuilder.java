@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class ImCoreServerCacheKeyBuilder extends RedisKeyBuilder {
 
     private static String IM_ONLINE_ZSET = "imOnlineZset";
+    private static String IM_ACK_MAP = "imAckMap";
 
     /**
      * 按照用户id取模10000 得出具体缓存所在key
@@ -20,8 +21,12 @@ public class ImCoreServerCacheKeyBuilder extends RedisKeyBuilder {
      * @param userId
      * @return
      */
-    public String buildImHeartBeatKey(Integer appId, Long userId) {
+    public String buildImHeartBeatKey(Long userId, Integer appId) {
         return super.getPrefix() + IM_ONLINE_ZSET + super.getSplitItem() + appId + super.getSplitItem() + userId % 10000;
+    }
+
+    public String buildImAckMapKey(Long userId, Integer appId) {
+        return super.getPrefix() + IM_ACK_MAP + super.getSplitItem() + appId + super.getSplitItem() + userId % 100;
     }
 
 }

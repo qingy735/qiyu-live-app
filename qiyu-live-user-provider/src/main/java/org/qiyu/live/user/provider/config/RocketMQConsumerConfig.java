@@ -50,7 +50,7 @@ public class RocketMQConsumerConfig implements InitializingBean {
         DefaultMQPushConsumer defaultMQPushConsumer = new DefaultMQPushConsumer();
         try {
             defaultMQPushConsumer.setNamesrvAddr(consumerProperties.getNameServer());
-            defaultMQPushConsumer.setConsumerGroup(consumerProperties.getGroupName());
+            defaultMQPushConsumer.setConsumerGroup(consumerProperties.getGroupName() + "_" + RocketMQConsumerConfig.class.getSimpleName());
             defaultMQPushConsumer.setConsumeMessageBatchMaxSize(1);
             defaultMQPushConsumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
             defaultMQPushConsumer.subscribe(UserProviderTopicNames.CACHE_ASYNC_DELETE_TOPIC, "*");

@@ -20,6 +20,5 @@ public class RouterHandlerRpcImpl implements IRouterHandlerRpc {
     @Override
     public void sendMsg(ImMsgBody imMsgBody) {
         routerHandlerService.onReceive(imMsgBody);
-        System.out.println("this is im-core-server");
     }
 }

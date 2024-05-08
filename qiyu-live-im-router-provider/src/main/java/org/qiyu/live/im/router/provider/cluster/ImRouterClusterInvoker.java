@@ -26,10 +26,10 @@ public class ImRouterClusterInvoker<T> extends AbstractClusterInvoker<T> {
         if (StringUtils.isEmpty(ip)) {
             throw new RuntimeException("ip can not be null!");
         }
-        //获取到指定的rpc服务提供者的所有地址信息
+        // 获取到指定的rpc服务提供者的所有地址信息
         List<Invoker<T>> invokers = list(invocation);
         Invoker<T> matchInvoker = invokers.stream().filter(invoker -> {
-            //拿到我们服务提供者的暴露地址（ip:端口的格式）
+            // 拿到我们服务提供者的暴露地址（ip:端口的格式）
             String serverIp = invoker.getUrl().getHost() + ":" + invoker.getUrl().getPort();
             return serverIp.equals(ip);
         }).findFirst().orElse(null);

@@ -11,4 +11,10 @@ public interface IRouterHandlerService {
 
     void onReceive(ImMsgBody imMsgBody);
 
+    /**
+     * 发送消息给客户端
+     * @param imMsgBody
+     */
+    boolean sendMsgToClient(ImMsgBody imMsgBody);
+
 }
