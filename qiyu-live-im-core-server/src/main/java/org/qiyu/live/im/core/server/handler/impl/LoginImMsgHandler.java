@@ -61,24 +61,36 @@ public class LoginImMsgHandler implements SimplyHandler {
         Long userId = imTokenRpc.getUserIdByToken(token);
         // token校验成功 而且和传递过来的userId是同一个，则允许建立连接
         if (userId != null && userId.equals(userIdFromMsg)) {
-            // 按照userId保存好相关的channel对象信息
-            ChannelHandlerContextCache.put(userId, ctx);
-            ImContextUtils.setUserId(ctx, userId);
-            // 将im消息回写给客户端
-            ImMsgBody respBody = new ImMsgBody();
-            respBody.setAppId(appId);
-            respBody.setUserId(userId);
-            respBody.setData("true");
-            ImMsg respMsg = ImMsg.build(ImMsgCodeEnum.IM_LOGIN_MSG.getCode(), JSON.toJSONString(respBody));
-            stringRedisTemplate.opsForValue().set(ImCoreServerConstants.IM_BIND_IP_KEY + appId + ":" + userId,
-                    ChannelHandlerContextCache.getServerIpAddress(),
-                    ImConstants.DEFAULT_HEART_BEAT_GAP * 2, TimeUnit.SECONDS);
-            LOGGER.info("[LoginMsgHandler] login success,userId is {},appId is {}", userId, appId);
-            ctx.writeAndFlush(respMsg);
+            loginSuccessHandler(ctx, userId, appId);
             return;
         }
         ctx.close();
         LOGGER.error("token check error,imMsg is {}", imMsg);
         throw new IllegalArgumentException("token check error");
+    }
+
+    /**
+     * 如果用户登录成功则处理相关记录
+     *
+     * @param ctx
+     * @param userId
+     * @param appId
+     */
+    public void loginSuccessHandler(ChannelHandlerContext ctx, Long userId, Integer appId) {
+        // 按照userId保存好相关的channel对象信息
+        ChannelHandlerContextCache.put(userId, ctx);
+        ImContextUtils.setUserId(ctx, userId);
+        ImContextUtils.setAppId(ctx, appId);
+        // 将im消息回写给客户端
+        ImMsgBody respBody = new ImMsgBody();
+        respBody.setAppId(appId);
+        respBody.setUserId(userId);
+        respBody.setData("true");
+        ImMsg respMsg = ImMsg.build(ImMsgCodeEnum.IM_LOGIN_MSG.getCode(), JSON.toJSONString(respBody));
+        stringRedisTemplate.opsForValue().set(ImCoreServerConstants.IM_BIND_IP_KEY + appId + ":" + userId,
+                ChannelHandlerContextCache.getServerIpAddress(),
+                ImConstants.DEFAULT_HEART_BEAT_GAP * 2, TimeUnit.SECONDS);
+        LOGGER.info("[LoginMsgHandler] login success,userId is {},appId is {}", userId, appId);
+        ctx.writeAndFlush(respMsg);
     }
 }

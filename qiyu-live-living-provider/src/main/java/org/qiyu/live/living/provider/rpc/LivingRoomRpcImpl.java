@@ -8,6 +8,8 @@ import org.qiyu.live.living.interfaces.dto.LivingRoomRespDTO;
 import org.qiyu.live.living.interfaces.rpc.ILivingRoomRpc;
 import org.qiyu.live.living.provider.service.ILivingRoomService;
 
+import java.util.List;
+
 /**
  * @Author idea
  * @Date: Created in 21:24 2023/7/19
@@ -18,6 +20,11 @@ public class LivingRoomRpcImpl implements ILivingRoomRpc {
 
     @Resource
     private ILivingRoomService livingRoomService;
+
+    @Override
+    public List<LivingRoomRespDTO> listAllLivingRoomFromDB(Integer type) {
+        return livingRoomService.listAllLivingRoomFromDB(type);
+    }
 
     @Override
     public PageWrapper<LivingRoomRespDTO> list(LivingRoomReqDTO livingRoomReqDTO) {
