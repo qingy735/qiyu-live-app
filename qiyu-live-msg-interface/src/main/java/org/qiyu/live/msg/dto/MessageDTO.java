@@ -16,7 +16,16 @@ public class MessageDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = -8982006120358366161L;
     private Long userId;
-    private Long objectId;
+    private Integer roomId;
+
+    /**
+     * 发送人名称
+     */
+    private String senderName;
+    /**
+     * 发送人头像
+     */
+    private String senderAvtar;
     /**
      * 消息类型
      */
@@ -28,20 +37,20 @@ public class MessageDTO implements Serializable {
     private Date createTime;
     private Date updateTime;
 
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
+    }
+
     public Long getUserId() {
         return userId;
     }
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public Long getObjectId() {
-        return objectId;
-    }
-
-    public void setObjectId(Long objectId) {
-        this.objectId = objectId;
     }
 
     public String getContent() {
@@ -66,5 +75,43 @@ public class MessageDTO implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getSenderAvtar() {
+        return senderAvtar;
+    }
+
+    public void setSenderAvtar(String senderAvtar) {
+        this.senderAvtar = senderAvtar;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "MessageDTO{" +
+                "userId=" + userId +
+                ", roomId=" + roomId +
+                ", senderName='" + senderName + '\'' +
+                ", senderAvtar='" + senderAvtar + '\'' +
+                ", type=" + type +
+                ", content='" + content + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
     }
 }

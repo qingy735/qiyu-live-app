@@ -26,7 +26,7 @@ public class UserController {
 
     @GetMapping("/getUserInfo")
     public UserDTO getUserInfo(Long userId) {
-        return userRpc.getById(userId);
+        return userRpc.getByUserId(userId);
     }
 
     @GetMapping("/batchQueryUserInfo")

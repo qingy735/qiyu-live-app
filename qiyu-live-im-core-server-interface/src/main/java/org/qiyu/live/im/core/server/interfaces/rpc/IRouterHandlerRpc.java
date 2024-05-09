@@ -2,6 +2,8 @@ package org.qiyu.live.im.core.server.interfaces.rpc;
 
 import org.qiyu.live.im.dto.ImMsgBody;
 
+import java.util.List;
+
 /**
  * 专门给router层的服务进行调用的接口
  *
@@ -17,4 +19,11 @@ public interface IRouterHandlerRpc {
      * @param imMsgBody
      */
     void sendMsg(ImMsgBody imMsgBody);
+
+    /**
+     * 支持批量发送消息
+     *
+     * @param imMsgBodyList
+     */
+    void batchSendMsg(List<ImMsgBody> imMsgBodyList);
 }

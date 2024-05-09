@@ -11,17 +11,8 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class ImContextUtils {
 
-
     public static void setUserId(ChannelHandlerContext ctx, Long userId) {
         ctx.attr(ImContextAttr.USER_ID).set(userId);
-    }
-
-    public static Integer getAppId(ChannelHandlerContext ctx) {
-        return ctx.attr(ImContextAttr.APP_ID).get();
-    }
-
-    public static void setAppId(ChannelHandlerContext ctx, Integer appId) {
-        ctx.attr(ImContextAttr.APP_ID).set(appId);
     }
 
     public static Long getUserId(ChannelHandlerContext ctx) {
@@ -32,8 +23,27 @@ public class ImContextUtils {
         ctx.attr(ImContextAttr.USER_ID).remove();
     }
 
+    public static Integer getAppId(ChannelHandlerContext ctx) {
+        return ctx.attr(ImContextAttr.APP_ID).get();
+    }
+
+    public static void setAppId(ChannelHandlerContext ctx, Integer appId) {
+        ctx.attr(ImContextAttr.APP_ID).set(appId);
+    }
+
     public static void removeAppId(ChannelHandlerContext ctx) {
         ctx.attr(ImContextAttr.APP_ID).remove();
     }
 
+    public static void setRoomId(ChannelHandlerContext ctx, Integer roomId) {
+        ctx.attr(ImContextAttr.ROOM_ID).set(roomId);
+    }
+
+    public static Integer getRoomId(ChannelHandlerContext ctx) {
+        return ctx.attr(ImContextAttr.ROOM_ID).get();
+    }
+
+    public static void removeRoomId(ChannelHandlerContext ctx) {
+        ctx.attr(ImContextAttr.ROOM_ID).remove();
+    }
 }

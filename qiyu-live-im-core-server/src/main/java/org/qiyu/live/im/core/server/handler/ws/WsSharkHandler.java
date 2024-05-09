@@ -63,12 +63,16 @@ public class WsSharkHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void handleHttpRequest(ChannelHandlerContext ctx, FullHttpRequest msg) {
+        // ws://127.0.0.1:8809/token={token}&userId={userId}&{roomId}=roomId
+        // ws://127.0.0.1:8809/{token}/{userId}/{code}/{param}
+        // 基于code去做不同策略的参数解析
         String webSocketUrl = "ws://" + serverIp + ":" + port;
         // 构造握手响应返回
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(webSocketUrl, null, false);
         String uri = msg.uri();
-        String token = uri.substring(uri.indexOf("token"), uri.indexOf("&")).replaceAll("token=", "");
-        Long userId = Long.valueOf(uri.substring(uri.indexOf("userId")).replaceAll("userId=", ""));
+        String[] paramArr = uri.split("/");
+        String token = paramArr[0];
+        Long userId = Long.valueOf(paramArr[1]);
         Long queryUserId = imTokenRpc.getUserIdByToken(token);
         // token的尾部就是appId
         Integer appId = Integer.valueOf(token.substring(token.lastIndexOf("%") + 1));
@@ -89,8 +93,33 @@ public class WsSharkHandler extends ChannelInboundHandlerAdapter {
         ChannelFuture channelFuture = webSocketServerHandshaker.handshake(ctx.channel(), msg);
         // 首次握手建立ws连接后，返回一定的内容给到客户端
         if (channelFuture.isSuccess()) {
-            loginMsgHandler.loginSuccessHandler(ctx, userId, appId);
+            Integer code = Integer.valueOf(paramArr[3]);
+            Integer roomId = null;
+            if (code == ParamCodeEnum.LIVING_ROOM_LOGIN.getCode()) {
+                roomId = Integer.valueOf(paramArr[4]);
+            }
+            loginMsgHandler.loginSuccessHandler(ctx, userId, appId, roomId);
             logger.info("[WebsocketSharkHandler] channel is connect!");
+        }
+    }
+
+    enum ParamCodeEnum {
+        LIVING_ROOM_LOGIN(1001, "直播间登录");
+
+        int code;
+        String desc;
+
+        ParamCodeEnum(int code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getDesc() {
+            return desc;
         }
     }
 }

@@ -16,6 +16,11 @@ public class LivingProviderCacheKeyBuilder extends RedisKeyBuilder {
     private static String LIVING_ROOM_LIST = "living_room_list";
     private static String LIVING_ROOM_OBJ = "living_room_obj";
     private static String REFRESH_LIVING_ROOM_LIST_LOCK = "refresh_living_room_list_lock";
+    private static String LIVING_ROOM_USER_SET = "living_room_user_set";
+
+    public String buildLivingRoomUserList(Integer roomId, Integer appId) {
+        return super.getPrefix() + LIVING_ROOM_USER_SET + super.getSplitItem() + appId + super.getSplitItem() + roomId;
+    }
 
     public String buildRefreshLivingRoomListLock() {
         return super.getPrefix() + REFRESH_LIVING_ROOM_LIST_LOCK;

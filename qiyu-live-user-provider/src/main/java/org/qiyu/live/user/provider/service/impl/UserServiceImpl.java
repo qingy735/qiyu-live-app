@@ -48,7 +48,7 @@ public class UserServiceImpl implements IUserService {
     private MQProducer mqProducer;
 
     @Override
-    public UserDTO getById(Long userId) {
+    public UserDTO getByUserId(Long userId) {
         if (userId == null) {
             return null;
         }

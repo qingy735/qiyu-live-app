@@ -6,6 +6,8 @@ import org.qiyu.live.im.dto.ImMsgBody;
 import org.qiyu.live.im.router.interfaces.rpc.ImRouterRpc;
 import org.qiyu.live.im.router.provider.service.ImRouterService;
 
+import java.util.List;
+
 /**
  * @Author idea
  * @Date: Created in 10:29 2023/7/12
@@ -20,5 +22,10 @@ public class ImRouterRpcImpl implements ImRouterRpc {
     @Override
     public boolean sendMsg(ImMsgBody imMsgBody) {
         return routerService.sendMsg(imMsgBody);
+    }
+
+    @Override
+    public void batchSendMsg(List<ImMsgBody> imMsgBodyList) {
+        routerService.batchSendMsg(imMsgBodyList);
     }
 }

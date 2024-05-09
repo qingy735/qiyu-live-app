@@ -27,8 +27,8 @@ public class UserRpcImpl implements IUserRpc {
     }
 
     @Override
-    public UserDTO getById(Long userId) {
-        return userService.getById(userId);
+    public UserDTO getByUserId(Long userId) {
+        return userService.getByUserId(userId);
     }
 
     @Override

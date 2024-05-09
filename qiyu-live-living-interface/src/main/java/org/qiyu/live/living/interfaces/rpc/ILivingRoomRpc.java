@@ -15,6 +15,14 @@ import java.util.List;
 public interface ILivingRoomRpc {
 
     /**
+     * 支持根据roomId查询出批量的userId（set）存储，3000个人，元素非常多，O(n)
+     *
+     * @param livingRoomReqDTO
+     * @return
+     */
+    List<Long> queryUserIdByRoomId(LivingRoomReqDTO livingRoomReqDTO);
+
+    /**
      * 查询所有的直播间类型
      *
      * @param type

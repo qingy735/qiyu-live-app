@@ -22,6 +22,11 @@ public class LivingRoomRpcImpl implements ILivingRoomRpc {
     private ILivingRoomService livingRoomService;
 
     @Override
+    public List<Long> queryUserIdByRoomId(LivingRoomReqDTO livingRoomReqDTO) {
+        return livingRoomService.queryUserIdByRoomId(livingRoomReqDTO);
+    }
+
+    @Override
     public List<LivingRoomRespDTO> listAllLivingRoomFromDB(Integer type) {
         return livingRoomService.listAllLivingRoomFromDB(type);
     }

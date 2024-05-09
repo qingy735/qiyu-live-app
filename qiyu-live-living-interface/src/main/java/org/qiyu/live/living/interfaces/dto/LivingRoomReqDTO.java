@@ -18,6 +18,7 @@ public class LivingRoomReqDTO implements Serializable {
     private Long anchorId;
     private String roomName;
     private Integer roomId;
+    private Integer appId;
     private String covertImg;
     private Integer type;
     private int page;
@@ -71,6 +72,14 @@ public class LivingRoomReqDTO implements Serializable {
         this.roomId = roomId;
     }
 
+    public Integer getAppId() {
+        return appId;
+    }
+
+    public void setAppId(Integer appId) {
+        this.appId = appId;
+    }
+
     public int getPage() {
         return page;
     }
@@ -94,6 +103,7 @@ public class LivingRoomReqDTO implements Serializable {
                 ", anchorId=" + anchorId +
                 ", roomName='" + roomName + '\'' +
                 ", roomId=" + roomId +
+                ", appId=" + appId +
                 ", covertImg='" + covertImg + '\'' +
                 ", type=" + type +
                 ", page=" + page +

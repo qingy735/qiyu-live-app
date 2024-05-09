@@ -7,6 +7,8 @@ import org.qiyu.live.common.interfaces.dto.PageWrapper;
 import org.qiyu.live.common.interfaces.enums.CommonStatusEnum;
 import org.qiyu.live.common.interfaces.utils.ConvertBeanUtils;
 import org.qiyu.live.framework.redis.starter.key.LivingProviderCacheKeyBuilder;
+import org.qiyu.live.im.core.server.interfaces.dto.ImOfflineDTO;
+import org.qiyu.live.im.core.server.interfaces.dto.ImOnlineDTO;
 import org.qiyu.live.living.interfaces.dto.LivingRoomReqDTO;
 import org.qiyu.live.living.interfaces.dto.LivingRoomRespDTO;
 import org.qiyu.live.living.provider.dao.mapper.LivingRoomMapper;
@@ -14,11 +16,14 @@ import org.qiyu.live.living.provider.dao.mapper.LivingRoomRecordMapper;
 import org.qiyu.live.living.provider.dao.po.LivingRoomPO;
 import org.qiyu.live.living.provider.dao.po.LivingRoomRecordPO;
 import org.qiyu.live.living.provider.service.ILivingRoomService;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +45,40 @@ public class LivingRoomServiceImpl implements ILivingRoomService {
     private RedisTemplate<String, Object> redisTemplate;
     @Resource
     private LivingProviderCacheKeyBuilder cacheKeyBuilder;
+
+    @Override
+    public List<Long> queryUserIdByRoomId(LivingRoomReqDTO livingRoomReqDTO) {
+        Integer appId = livingRoomReqDTO.getAppId();
+        Integer roomId = livingRoomReqDTO.getRoomId();
+        String cacheKey = cacheKeyBuilder.buildLivingRoomUserList(roomId, appId);
+        Cursor<Object> cursor = redisTemplate.opsForSet().scan(cacheKey, ScanOptions.scanOptions().match("*").count(100).build());
+        ArrayList<Long> userIdList = new ArrayList<>();
+        while (cursor.hasNext()) {
+            Long userId = (Long) cursor.next();
+            userIdList.add(userId);
+        }
+        return userIdList;
+    }
+
+    @Override
+    public void userOnlineHandler(ImOnlineDTO imOnlineDTO) {
+        Long userId = imOnlineDTO.getUserId();
+        Integer appId = imOnlineDTO.getAppId();
+        Integer roomId = imOnlineDTO.getRoomId();
+        // set集合中
+        String cacheKey = cacheKeyBuilder.buildLivingRoomUserList(roomId, appId);
+        redisTemplate.opsForSet().add(cacheKey, userId);
+        redisTemplate.expire(cacheKey, 12, TimeUnit.HOURS);
+    }
+
+    @Override
+    public void userOfflineHandler(ImOfflineDTO imOfflineDTO) {
+        Long userId = imOfflineDTO.getUserId();
+        Integer appId = imOfflineDTO.getAppId();
+        Integer roomId = imOfflineDTO.getRoomId();
+        String cacheKey = cacheKeyBuilder.buildLivingRoomUserList(roomId, appId);
+        redisTemplate.opsForSet().remove(cacheKey, userId);
+    }
 
     @Override
     public List<LivingRoomRespDTO> listAllLivingRoomFromDB(Integer type) {

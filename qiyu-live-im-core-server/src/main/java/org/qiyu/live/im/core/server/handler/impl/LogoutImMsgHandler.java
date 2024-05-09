@@ -1,10 +1,15 @@
 package org.qiyu.live.im.core.server.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import io.netty.channel.ChannelHandlerContext;
 import jakarta.annotation.Resource;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.rocketmq.client.producer.MQProducer;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.common.message.Message;
+import org.qiyu.live.common.interfaces.topic.ImCoreServerProviderTopicNames;
 import org.qiyu.live.im.constants.ImConstants;
 import org.qiyu.live.im.constants.ImMsgCodeEnum;
 import org.qiyu.live.im.core.server.common.ChannelHandlerContextCache;
@@ -34,6 +39,8 @@ public class LogoutImMsgHandler implements SimplyHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(LogoutImMsgHandler.class);
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private MQProducer mqProducer;
 
     @Override
     public void handler(ChannelHandlerContext ctx, ImMsg imMsg) {
@@ -52,6 +59,27 @@ public class LogoutImMsgHandler implements SimplyHandler {
             throw new IllegalArgumentException("body error");
         }
         // 将im消息回写给客户端
+        logoutHandler(ctx, userId, appId);
+        sendLogoutMQ(userId, appId);
+    }
+
+    public void sendLogoutMQ(Long userId, Integer appId) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("userId", userId);
+        jsonObject.put("appId", appId);
+        jsonObject.put("loginTime", System.currentTimeMillis());
+        Message message = new Message();
+        message.setTopic(ImCoreServerProviderTopicNames.IM_OFFLINE_TOPIC);
+        message.setBody(jsonObject.toJSONString().getBytes());
+        try {
+            SendResult sendResult = mqProducer.send(message);
+            LOGGER.info("[sendLogoutMQ] sendResult is {}", sendResult);
+        } catch (Exception e) {
+            LOGGER.error("[sendLogoutMQ] error is: ", e);
+        }
+    }
+
+    public void logoutHandler(ChannelHandlerContext ctx, Long userId, Integer appId) {
         ImMsgBody respBody = new ImMsgBody();
         respBody.setAppId(appId);
         respBody.setUserId(userId);

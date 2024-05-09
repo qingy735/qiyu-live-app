@@ -1,10 +1,18 @@
 package org.qiyu.live.im.core.server.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import io.netty.channel.ChannelHandlerContext;
 import jakarta.annotation.Resource;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.rocketmq.client.exception.MQBrokerException;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.client.producer.MQProducer;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.remoting.exception.RemotingException;
+import org.qiyu.live.common.interfaces.topic.ImCoreServerProviderTopicNames;
 import org.qiyu.live.im.constants.ImConstants;
 import org.qiyu.live.im.constants.ImMsgCodeEnum;
 import org.qiyu.live.im.core.server.common.ChannelHandlerContextCache;
@@ -12,6 +20,7 @@ import org.qiyu.live.im.core.server.common.ImContextUtils;
 import org.qiyu.live.im.core.server.common.ImMsg;
 import org.qiyu.live.im.core.server.handler.SimplyHandler;
 import org.qiyu.live.im.core.server.interfaces.constants.ImCoreServerConstants;
+import org.qiyu.live.im.core.server.interfaces.dto.ImOnlineDTO;
 import org.qiyu.live.im.dto.ImMsgBody;
 import org.qiyu.live.im.interfaces.ImTokenRpc;
 import org.slf4j.Logger;
@@ -36,6 +45,8 @@ public class LoginImMsgHandler implements SimplyHandler {
     private ImTokenRpc imTokenRpc;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private MQProducer mqProducer;
 
     @Override
     public void handler(ChannelHandlerContext ctx, ImMsg imMsg) {
@@ -61,12 +72,29 @@ public class LoginImMsgHandler implements SimplyHandler {
         Long userId = imTokenRpc.getUserIdByToken(token);
         // token校验成功 而且和传递过来的userId是同一个，则允许建立连接
         if (userId != null && userId.equals(userIdFromMsg)) {
-            loginSuccessHandler(ctx, userId, appId);
+            loginSuccessHandler(ctx, userId, appId, null);
             return;
         }
         ctx.close();
         LOGGER.error("token check error,imMsg is {}", imMsg);
         throw new IllegalArgumentException("token check error");
+    }
+
+    public void sendLoginMQ(Long userId, Integer appId, Integer roomId) {
+        ImOnlineDTO imOnlineDTO = new ImOnlineDTO();
+        imOnlineDTO.setUserId(userId);
+        imOnlineDTO.setAppId(appId);
+        imOnlineDTO.setLoginTime(System.currentTimeMillis());
+        imOnlineDTO.setRoomId(roomId);
+        Message message = new Message();
+        message.setTopic(ImCoreServerProviderTopicNames.IM_ONLINE_TOPIC);
+        message.setBody(JSON.toJSONString(imOnlineDTO).getBytes());
+        try {
+            SendResult sendResult = mqProducer.send(message);
+            LOGGER.info("[sendLoginMQ] sendResult is {}", sendResult);
+        } catch (Exception e) {
+            LOGGER.error("[sendLoginMQ] error is: ", e);
+        }
     }
 
     /**
@@ -76,11 +104,14 @@ public class LoginImMsgHandler implements SimplyHandler {
      * @param userId
      * @param appId
      */
-    public void loginSuccessHandler(ChannelHandlerContext ctx, Long userId, Integer appId) {
+    public void loginSuccessHandler(ChannelHandlerContext ctx, Long userId, Integer appId, Integer roomId) {
         // 按照userId保存好相关的channel对象信息
         ChannelHandlerContextCache.put(userId, ctx);
         ImContextUtils.setUserId(ctx, userId);
         ImContextUtils.setAppId(ctx, appId);
+        if (roomId != null) {
+            ImContextUtils.setRoomId(ctx, roomId);
+        }
         // 将im消息回写给客户端
         ImMsgBody respBody = new ImMsgBody();
         respBody.setAppId(appId);
@@ -88,9 +119,10 @@ public class LoginImMsgHandler implements SimplyHandler {
         respBody.setData("true");
         ImMsg respMsg = ImMsg.build(ImMsgCodeEnum.IM_LOGIN_MSG.getCode(), JSON.toJSONString(respBody));
         stringRedisTemplate.opsForValue().set(ImCoreServerConstants.IM_BIND_IP_KEY + appId + ":" + userId,
-                ChannelHandlerContextCache.getServerIpAddress(),
+                ChannelHandlerContextCache.getServerIpAddress() + "%" + userId,
                 ImConstants.DEFAULT_HEART_BEAT_GAP * 2, TimeUnit.SECONDS);
         LOGGER.info("[LoginMsgHandler] login success,userId is {},appId is {}", userId, appId);
         ctx.writeAndFlush(respMsg);
+        sendLoginMQ(userId, appId, roomId);
     }
 }

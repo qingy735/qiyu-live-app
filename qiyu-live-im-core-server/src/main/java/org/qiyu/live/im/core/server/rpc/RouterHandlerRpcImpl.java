@@ -6,6 +6,8 @@ import org.qiyu.live.im.core.server.interfaces.rpc.IRouterHandlerRpc;
 import org.qiyu.live.im.core.server.service.IRouterHandlerService;
 import org.qiyu.live.im.dto.ImMsgBody;
 
+import java.util.List;
+
 /**
  * @Author: QingY
  * @Date: Created in 15:54 2024-05-06
@@ -20,5 +22,12 @@ public class RouterHandlerRpcImpl implements IRouterHandlerRpc {
     @Override
     public void sendMsg(ImMsgBody imMsgBody) {
         routerHandlerService.onReceive(imMsgBody);
+    }
+
+    @Override
+    public void batchSendMsg(List<ImMsgBody> imMsgBodyList) {
+        imMsgBodyList.forEach(imMsgBody -> {
+            routerHandlerService.onReceive(imMsgBody);
+        });
     }
 }

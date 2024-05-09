@@ -20,7 +20,7 @@ public interface IUserRpc {
      * @param userId
      * @return
      */
-    UserDTO getById(Long userId);
+    UserDTO getByUserId(Long userId);
 
     /**
      * 用户信息更新

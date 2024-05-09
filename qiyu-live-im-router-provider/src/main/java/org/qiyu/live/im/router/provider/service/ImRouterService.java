@@ -2,6 +2,8 @@ package org.qiyu.live.im.router.provider.service;
 
 import org.qiyu.live.im.dto.ImMsgBody;
 
+import java.util.List;
+
 /**
  * @Author idea
  * @Date: Created in 10:30 2023/7/12
@@ -17,4 +19,11 @@ public interface ImRouterService {
      * @return
      */
     boolean sendMsg(ImMsgBody imMsgBody);
+
+    /**
+     * 批量发送消息
+     *
+     * @param imMsgBodyList
+     */
+    void batchSendMsg(List<ImMsgBody> imMsgBodyList);
 }
