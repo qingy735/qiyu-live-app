@@ -9,7 +9,7 @@ import org.qiyu.live.api.vo.resp.LivingRoomPageRespVO;
 import org.qiyu.live.api.vo.resp.LivingRoomRespVO;
 import org.qiyu.live.common.interfaces.dto.PageWrapper;
 import org.qiyu.live.common.interfaces.utils.ConvertBeanUtils;
-import org.qiyu.live.framework.web.starter.QiyuRequestContext;
+import org.qiyu.live.framework.web.starter.context.QiyuRequestContext;
 import org.qiyu.live.living.interfaces.dto.LivingRoomReqDTO;
 import org.qiyu.live.living.interfaces.dto.LivingRoomRespDTO;
 import org.qiyu.live.living.interfaces.rpc.ILivingRoomRpc;

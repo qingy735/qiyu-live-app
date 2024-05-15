@@ -9,6 +9,10 @@
     <artifactId>qiyu-live-framework-web-starter</artifactId>
     <description>web容器的统一拦截器</description>
 
+    <properties>
+        <qiyu-live-redis-starter.version>1.0-SNAPSHOT</qiyu-live-redis-starter.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -47,6 +51,11 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
             <version>${spring-cloud-boostrap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.qingy</groupId>
+            <artifactId>qiyu-live-framework-redis-starter</artifactId>
+            <version>${qiyu-live-redis-starter.version}</version>
         </dependency>
     </dependencies>
 </project>

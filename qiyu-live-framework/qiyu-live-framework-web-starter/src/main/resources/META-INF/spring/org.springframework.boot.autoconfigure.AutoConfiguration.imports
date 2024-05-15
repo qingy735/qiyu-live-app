@@ -1,1 +1,2 @@
-org.qiyu.live.framework.web.starter.WebConfig
+org.qiyu.live.framework.web.starter.config.WebConfig
+org.qiyu.live.framework.web.starter.error.GlobalExceptionHandler

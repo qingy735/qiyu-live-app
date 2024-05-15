@@ -1,7 +1,7 @@
 package org.qiyu.live.api.controller;
 
 import org.qiyu.live.common.interfaces.vo.WebResponseVO;
-import org.qiyu.live.framework.web.starter.QiyuRequestContext;
+import org.qiyu.live.framework.web.starter.context.QiyuRequestContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

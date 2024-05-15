@@ -4,7 +4,7 @@ import jakarta.annotation.Resource;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.qiyu.live.api.service.ImService;
 import org.qiyu.live.api.vo.resp.ImConfigVO;
-import org.qiyu.live.framework.web.starter.QiyuRequestContext;
+import org.qiyu.live.framework.web.starter.context.QiyuRequestContext;
 import org.qiyu.live.im.constants.AppIdEnum;
 import org.qiyu.live.im.interfaces.ImTokenRpc;
 import org.springframework.cloud.client.ServiceInstance;

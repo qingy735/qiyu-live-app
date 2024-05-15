@@ -52,6 +52,13 @@ public class WebResponseVO {
         return webResponseVO;
     }
 
+    public static WebResponseVO bizError(String msg, Integer code) {
+        WebResponseVO webResponseVO = new WebResponseVO();
+        webResponseVO.setCode(code);
+        webResponseVO.setMsg(msg);
+        return webResponseVO;
+    }
+
     public static WebResponseVO sysError() {
         WebResponseVO webResponseVO = new WebResponseVO();
         webResponseVO.setCode(500);
