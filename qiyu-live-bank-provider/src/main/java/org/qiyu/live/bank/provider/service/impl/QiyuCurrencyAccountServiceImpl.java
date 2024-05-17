@@ -79,7 +79,6 @@ public class QiyuCurrencyAccountServiceImpl implements IQiyuCurrencyAccountServi
             // 在异步线程池中完成数据库层的扣减和流水记录插入操作，带有事务
             consumeDecrDBHandler(userId, num);
         });
-        qiyuCurrencyAccountMapper.decr(userId, num);
     }
 
     @Override
