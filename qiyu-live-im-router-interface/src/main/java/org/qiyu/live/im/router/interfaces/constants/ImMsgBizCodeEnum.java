@@ -1,4 +1,4 @@
-package org.qiyu.live.msg.enums;
+package org.qiyu.live.im.router.interfaces.constants;
 
 /**
  * @Author idea
@@ -7,7 +7,10 @@ package org.qiyu.live.msg.enums;
  */
 public enum ImMsgBizCodeEnum {
 
-    LIVING_ROOM_IM_CHAT_MSG_BIZ(5555, "直播间im聊天消息");
+    LIVING_ROOM_IM_CHAT_MSG_BIZ(5555, "直播间im聊天消息"),
+    LIVING_ROOM_SEND_GIFT_SUCCESS(5556, "送礼成功"),
+    LIVING_ROOM_SEND_GIFT_FAIL(5557, "送礼失败");
+
 
     int code;
     String desc;

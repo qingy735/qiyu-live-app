@@ -1,18 +1,13 @@
-package org.qiyu.live.gift.dto;
+package org.qiyu.live.api.vo.resp;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @Author idea
- * @Date: Created in 14:58 2023/7/30
+ * @Date: Created in 15:16 2023/8/1
  * @Description
  */
-public class GiftConfigDTO implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 2285354775828848375L;
+public class GiftConfigVO {
 
     private Integer giftId;
     private Integer price;
@@ -89,7 +84,7 @@ public class GiftConfigDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "GiftConfigDTO{" +
+        return "GiftConfigVO{" +
                 "giftId=" + giftId +
                 ", price=" + price +
                 ", giftName='" + giftName + '\'' +
