@@ -26,4 +26,5 @@ public class PayNotifyServiceImpl implements IPayNotifyService {
         payOrderDTO.setOrderId(wxPayNotifyVO.getOrderId());
         return payOrderRpc.payNotify(payOrderDTO) ? "success" : "fail";
     }
+
 }

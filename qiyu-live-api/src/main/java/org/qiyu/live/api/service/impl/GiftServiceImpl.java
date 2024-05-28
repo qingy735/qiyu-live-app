@@ -62,6 +62,7 @@ public class GiftServiceImpl implements IGiftService {
         sendGiftMq.setReceiverId(giftReqVO.getReceiverId());
         sendGiftMq.setPrice(giftConfigDTO.getPrice());
         sendGiftMq.setUrl(giftConfigDTO.getSvgaUrl());
+        sendGiftMq.setType(giftReqVO.getType());
         // 避免重复消费
         sendGiftMq.setUuid(UUID.randomUUID().toString());
         Message message = new Message();

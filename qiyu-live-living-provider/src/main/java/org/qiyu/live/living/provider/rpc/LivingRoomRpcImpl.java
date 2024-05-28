@@ -3,6 +3,7 @@ package org.qiyu.live.living.provider.rpc;
 import jakarta.annotation.Resource;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.qiyu.live.common.interfaces.dto.PageWrapper;
+import org.qiyu.live.living.interfaces.dto.LivingPkRespDTO;
 import org.qiyu.live.living.interfaces.dto.LivingRoomReqDTO;
 import org.qiyu.live.living.interfaces.dto.LivingRoomRespDTO;
 import org.qiyu.live.living.interfaces.rpc.ILivingRoomRpc;
@@ -49,5 +50,20 @@ public class LivingRoomRpcImpl implements ILivingRoomRpc {
     @Override
     public boolean closeLiving(LivingRoomReqDTO livingRoomReqDTO) {
         return livingRoomService.closeLiving(livingRoomReqDTO);
+    }
+
+    @Override
+    public Long queryOnlinePkUserId(Integer roomId) {
+        return livingRoomService.queryOnlinePkUserId(roomId);
+    }
+
+    @Override
+    public LivingPkRespDTO onlinePk(LivingRoomReqDTO livingRoomReqDTO) {
+        return livingRoomService.onlinePk(livingRoomReqDTO);
+    }
+
+    @Override
+    public boolean offlinePk(LivingRoomReqDTO livingRoomReqDTO) {
+        return livingRoomService.offlinePk(livingRoomReqDTO);
     }
 }

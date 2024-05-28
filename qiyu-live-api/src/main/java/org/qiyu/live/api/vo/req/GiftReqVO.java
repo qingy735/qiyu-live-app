@@ -11,6 +11,7 @@ public class GiftReqVO {
     private Integer roomId;
     private Long senderUserId;
     private Long receiverId;
+    private Integer type;
 
     public int getGiftId() {
         return giftId;
@@ -44,6 +45,14 @@ public class GiftReqVO {
         this.roomId = roomId;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "GiftReqVO{" +
@@ -51,6 +60,7 @@ public class GiftReqVO {
                 ", roomId=" + roomId +
                 ", senderUserId=" + senderUserId +
                 ", receiverId=" + receiverId +
+                ", type=" + type +
                 '}';
     }
 }

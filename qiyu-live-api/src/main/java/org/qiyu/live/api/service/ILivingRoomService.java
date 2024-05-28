@@ -2,6 +2,7 @@ package org.qiyu.live.api.service;
 
 import org.qiyu.live.api.vo.LivingRoomInitVO;
 import org.qiyu.live.api.vo.req.LivingRoomReqVO;
+import org.qiyu.live.api.vo.req.OnlinePkReqVO;
 import org.qiyu.live.api.vo.resp.LivingRoomPageRespVO;
 
 /**
@@ -43,5 +44,12 @@ public interface ILivingRoomService {
      */
     LivingRoomInitVO anchorConfig(Long userId, Integer roomId);
 
+    /**
+     * 用户在pk直播间中，连上线请求
+     *
+     * @param onlinePkReqVO
+     * @return
+     */
+    boolean onlinePk(OnlinePkReqVO onlinePkReqVO);
 
 }

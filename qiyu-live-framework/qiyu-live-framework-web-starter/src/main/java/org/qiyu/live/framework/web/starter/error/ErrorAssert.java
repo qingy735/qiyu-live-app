@@ -43,4 +43,16 @@ public class ErrorAssert {
         }
     }
 
+    /**
+     * flag == true
+     *
+     * @param flag
+     * @param qiyuErrorException
+     */
+    public static void isTrue(boolean flag, QiyuErrorException qiyuErrorException) {
+        if (!flag) {
+            throw qiyuErrorException;
+        }
+    }
+
 }

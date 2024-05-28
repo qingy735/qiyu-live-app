@@ -13,14 +13,15 @@ import java.io.Serializable;
 public class LivingRoomReqDTO implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -4370401310595190339L;
+    private static final long serialVersionUID = 1565051155568683451L;
     private Integer id;
     private Long anchorId;
+    private Long pkObjId;
     private String roomName;
     private Integer roomId;
-    private Integer appId;
     private String covertImg;
     private Integer type;
+    private Integer appId;
     private int page;
     private int pageSize;
 
@@ -38,6 +39,14 @@ public class LivingRoomReqDTO implements Serializable {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Long getPkObjId() {
+        return pkObjId;
+    }
+
+    public void setPkObjId(Long pkObjId) {
+        this.pkObjId = pkObjId;
     }
 
     public Long getAnchorId() {
@@ -64,20 +73,20 @@ public class LivingRoomReqDTO implements Serializable {
         this.roomName = roomName;
     }
 
-    public Integer getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Integer roomId) {
-        this.roomId = roomId;
-    }
-
     public Integer getAppId() {
         return appId;
     }
 
     public void setAppId(Integer appId) {
         this.appId = appId;
+    }
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
     }
 
     public int getPage() {
@@ -101,11 +110,12 @@ public class LivingRoomReqDTO implements Serializable {
         return "LivingRoomReqDTO{" +
                 "id=" + id +
                 ", anchorId=" + anchorId +
+                ", pkObjId=" + pkObjId +
                 ", roomName='" + roomName + '\'' +
                 ", roomId=" + roomId +
-                ", appId=" + appId +
                 ", covertImg='" + covertImg + '\'' +
                 ", type=" + type +
+                ", appId=" + appId +
                 ", page=" + page +
                 ", pageSize=" + pageSize +
                 '}';

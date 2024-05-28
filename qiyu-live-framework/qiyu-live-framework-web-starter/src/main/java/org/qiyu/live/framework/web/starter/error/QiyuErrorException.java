@@ -14,6 +14,11 @@ public class QiyuErrorException extends RuntimeException {
         this.errorMsg = errorMsg;
     }
 
+    public QiyuErrorException(QiyuBaseError qiyuBaseError) {
+        this.errorCode = qiyuBaseError.getErrorCode();
+        this.errorMsg = qiyuBaseError.getErrorMsg();
+    }
+
     public int getErrorCode() {
         return errorCode;
     }

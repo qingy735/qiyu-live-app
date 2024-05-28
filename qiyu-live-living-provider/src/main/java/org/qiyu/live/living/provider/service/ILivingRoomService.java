@@ -3,6 +3,7 @@ package org.qiyu.live.living.provider.service;
 import org.qiyu.live.common.interfaces.dto.PageWrapper;
 import org.qiyu.live.im.core.server.interfaces.dto.ImOfflineDTO;
 import org.qiyu.live.im.core.server.interfaces.dto.ImOnlineDTO;
+import org.qiyu.live.living.interfaces.dto.LivingPkRespDTO;
 import org.qiyu.live.living.interfaces.dto.LivingRoomReqDTO;
 import org.qiyu.live.living.interfaces.dto.LivingRoomRespDTO;
 
@@ -54,7 +55,7 @@ public interface ILivingRoomService {
     PageWrapper<LivingRoomRespDTO> list(LivingRoomReqDTO livingRoomReqDTO);
 
     /**
-     * 根据用户id查询是否正在开播
+     * 根据roomId查询
      *
      * @param roomId
      * @return
@@ -70,10 +71,34 @@ public interface ILivingRoomService {
     Integer startLivingRoom(LivingRoomReqDTO livingRoomReqDTO);
 
     /**
+     * 根据roomId查询当前pk人是谁
+     *
+     * @param userId
+     * @return
+     */
+    Long queryOnlinePkUserId(Integer userId);
+
+    /**
+     * 用户在pk直播间中，连上线请求
+     *
+     * @param livingRoomReqDTO
+     * @return
+     */
+    LivingPkRespDTO onlinePk(LivingRoomReqDTO livingRoomReqDTO);
+
+    /**
      * 关闭直播间
      *
      * @param livingRoomReqDTO
      * @return
      */
     boolean closeLiving(LivingRoomReqDTO livingRoomReqDTO);
+
+    /**
+     * 用户在pk直播间下线
+     *
+     * @param livingRoomReqDTO
+     * @return
+     */
+    boolean offlinePk(LivingRoomReqDTO livingRoomReqDTO);
 }

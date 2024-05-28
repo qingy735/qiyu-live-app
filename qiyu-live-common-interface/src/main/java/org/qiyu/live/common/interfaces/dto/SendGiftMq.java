@@ -14,6 +14,7 @@ public class SendGiftMq {
     private Integer roomId;
     private String url;
     private String uuid;
+    private Integer type;
 
 
     public String getUrl() {
@@ -72,15 +73,25 @@ public class SendGiftMq {
         this.uuid = uuid;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "SendGiftMq{" +
                 "userId=" + userId +
-                ", url=" + url +
                 ", giftId=" + giftId +
                 ", price=" + price +
                 ", receiverId=" + receiverId +
                 ", roomId=" + roomId +
+                ", url='" + url + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", type=" + type +
                 '}';
     }
 }
